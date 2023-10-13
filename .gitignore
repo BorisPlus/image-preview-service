@@ -1,0 +1,5 @@
+/bin/**
+/docker.integration-test/logs/headers.json
+/gitignore/**
+**/**.001.jpg
+go.work.sum

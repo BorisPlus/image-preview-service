@@ -1,0 +1,64 @@
+
+# Fat image with sources
+FROM golang:1.21 as development
+
+# Source-code files
+WORKDIR /src
+COPY go.mod .
+
+# Only necessary source-code files
+WORKDIR /src/docker.integration-test/fullstack_client
+COPY ./docker.integration-test/fullstack_client/fullstack_client.go .
+COPY ./docker.integration-test/fullstack_client/fullstack_client_config.go .
+COPY ./docker.integration-test/fullstack_client/fullstack_client_integration_test.go .
+
+WORKDIR /src/core/config
+COPY ./core/config/config.go .
+COPY ./core/config/http_client.go .
+COPY ./core/config/storage_client.go .
+COPY ./core/config/logger.go .
+
+WORKDIR /src/core/models
+COPY ./core/models/result.go .
+COPY ./core/models/transformation.go .
+COPY ./core/models/transformation_with_result.go .
+
+WORKDIR /src/core/http_service/servemux/handlers/common
+COPY ./core/http_service/servemux/handlers/common/common.go .
+
+WORKDIR /src/core/pixel
+COPY ./core/pixel/pixel.go .
+
+WORKDIR /src/core/storage_service/client
+COPY ./core/storage_service/client/backend_client.go .
+COPY ./core/storage_service/client/frontend_client.go .
+
+WORKDIR /src/core/storage_service/common
+COPY ./core/storage_service/common/converters.go .
+
+WORKDIR /src/core/interfaces
+COPY ./core/interfaces/logger.go .
+COPY ./core/interfaces/models.go .
+
+WORKDIR /src/core/storage_service/rpc/api
+COPY ./core/storage_service/rpc/api/storage_grpc.pb.go .
+COPY ./core/storage_service/rpc/api/storage.pb.go .
+
+WORKDIR /src/docker.integration-test/config
+COPY ./docker.integration-test/config/fullstack_client.json .
+
+# Go requirements
+RUN go mod tidy
+RUN go mod download -x
+
+# One imege - one process
+ENTRYPOINT [ \
+    "go", \
+    "test", \ 
+    "/src/docker.integration-test/fullstack_client/", \
+    "-run", \
+    "TestIntegration", \
+    "-config", \
+    "/src/docker.integration-test/config/fullstack_client.json" \
+]
+# docker build --no-cache --progress plain -f ./docker.integration-test/Dockerfile.fullstack_client --tag=previewer/integration-test-fullstack_client:v1 .

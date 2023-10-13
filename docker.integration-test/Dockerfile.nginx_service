@@ -1,0 +1,8 @@
+FROM nginx
+COPY ./docker.integration-test/images/001.jpg /usr/share/nginx/html
+COPY ./docker.integration-test/images/transformed.100x100.001.jpg /usr/share/nginx/html
+COPY ./docker.integration-test/images/transformed.50x100.001.jpg /usr/share/nginx/html
+COPY ./docker.integration-test/images/transformed.50x50.001.jpg /usr/share/nginx/html
+COPY ./docker.integration-test/images/transformed.0x0.001.jpg /usr/share/nginx/html
+# docker build -f ./docker.integration-test/Dockerfile.nginx_service -t previewer/imaged-nginx .
+# docker run --name imaged-nginx -d -p 8082:80 previewer/imaged-nginx

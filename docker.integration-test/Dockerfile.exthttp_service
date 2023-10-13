@@ -1,0 +1,38 @@
+
+# Fat image with sources
+FROM golang:1.21
+
+#Source-code files
+WORKDIR /src
+COPY go.mod .
+
+WORKDIR /src/docker.integration-test/exthttp_service
+COPY ./docker.integration-test/exthttp_service/exthttp_service_integration_test.go .
+
+WORKDIR /src/docker.integration-test/config
+COPY ./docker.integration-test/config/exthttp_service.json .
+
+WORKDIR /src/core/config 
+COPY ./core/config/config.go .
+COPY ./core/config/http_server.go .
+
+# Go requirements
+WORKDIR /src
+RUN go mod tidy
+RUN go mod download -x
+
+# Common log directory
+RUN mkdir -p /var/log/previewer
+RUN chown 1000:1000 /var/log/previewer
+
+# One imege - one process
+ENTRYPOINT [ \
+    "go", \
+    "test", \ 
+    "/src/docker.integration-test/exthttp_service/", \
+    "-run", \
+    "TestIntegration", \
+    "-config", \
+    "/src/docker.integration-test/config/exthttp_service.json" \
+]
+# docker build --no-cache --progress plain -f ./docker.integration-test/Dockerfile.exthttp_service --tag=previewer/integration-test-exthttp_service:v1 .

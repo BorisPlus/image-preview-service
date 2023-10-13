@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <script>
+            function refreshImages()
+            {
+                let d = new Date;
+                let dt = '?dt='
+                let exists = document.getElementById("exists");
+                if(exists.complete) {
+                    let http = exists.src;
+                    if (http.indexOf(dt) != -1) { http = http.split(dt)[0]; } 
+                    exists.src = http + dt + d.getTime();
+                }
+                notexist = document.getElementById("notexist");
+                if(notexist.complete) {
+                    var http = notexist.src;
+                    if (http.indexOf(dt) != -1) { http = http.split(dt)[0]; } 
+                    notexist.src = http + dt + d.getTime();
+                }
+                setTimeout(refreshImages, 500);
+            }
+        </script>
+    </head>
+    <body>
+        <h1>Preview examples</h1>
+        <h2>1. Image at foreign server</h2>
+        http://img.youtube.com
+        <br>
+        <a href="http://img.youtube.com" target="_blank">
+            <img style='border:3px solid #000000' src="http://img.youtube.com">
+        </a>
+        <br>
+        100 x 200 Preview of Image at foreign server (need time to prepare)
+        <br>
+        http://localhost:8080/100/200/img.youtube.com 
+        <br>
+        <a href="http://localhost:8080/100/200/img.youtube.com" target="_blank">
+            <img id="exists" style='border:3px solid #000000' height=100 width=200  src="http://localhost:8080/100/200/img.youtube.com">
+        </a>
+        <h2>2. Not exist Image in at foreign server</h2> 
+        http://otus.ru/image.jpg (it does not exist)
+        <br>
+        <a href="http://otus.ru/image2.jpg" target="_blank">
+            <img style='border:3px solid #000000' src="http://otus.ru/image2.jpg">
+        </a>
+        <br>
+        100 x 100 Preview of not exist Image at foreign server (need time to proxy-solution)
+        <br>
+        http://localhost:8080/100/100/otus.ru/image2.jpg 
+        <br>
+        <a href="http://localhost:8080/100/100/otus.ru/image2.jpg" target="_blank">
+            <img  id="notexist" style='border:3px solid #000000' height=100 width=100 src="http://localhost:8080/100/100/otus.ru/image2.jpg">
+        </a>
+        <h2>3. Not valid previewer route</h2> 
+        Invalid Gate http://localhost:8080/abracadabra/image3.jpg Request (immideantly response)
+        <br>
+        <a href="http://localhost:8080/abracadabra/image3.jpg" target="_blank">
+            <img style='border:3px solid #000000' height=100 width=100 src="http://localhost:8080/abracadabra/image3.jpg">
+        </a>
+    </body>
+    <script>
+        refreshImages()
+    </script>
+</html>

@@ -1,0 +1,21 @@
+ {
+  "Storage": {
+    "Host": "10.10.0.1",
+    "Port": 5080
+  },
+  "PreviewerHTTP": {
+    "Host": "10.10.0.1",
+    "Port": 8081
+  },
+  "NginxHTTP": {
+    "Host": "10.10.0.1",
+    "Port": 8082
+  },
+  "ExtHTTP": {
+    "Host": "10.10.0.1",
+    "Port": 8083
+  },
+  "Log": {
+    "Level": "DEBUG"
+  }
+}

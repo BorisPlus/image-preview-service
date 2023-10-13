@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  fullstackclient:
+    depends_on:
+      - storage
+      - http
+      - nginx
+      - exthttp
+    image: debug-previewer-fullstack_client
+    container_name: debug-previewer-fullstack_client
+    hostname: fullstack_client
+    environment:
+      - PREVIEWER_LOG_PATH=/var/log/image-preview-service/
+    build:
+      context: ../.
+      args:
+        MICROSERVICE: fullstack_client
+      dockerfile: ./docker.integration-test/Dockerfile.fullstack_client
+    volumes:
+      - ./logs:/var/log/image-preview-service/

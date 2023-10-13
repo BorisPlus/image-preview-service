@@ -1,0 +1,46 @@
+version: "3.9"
+services:
+  http:
+    image: previewer-http-server
+    container_name: previewer-http-server
+    hostname: http
+    build:
+      context: ../.
+      args:
+        MICROSERVICE: http_service
+      dockerfile: ./docker/Dockerfile
+    restart: always
+    networks:
+      frontend:
+      backend:
+    ports: 
+      - target: 8080
+        published: "8080"
+        protocol: tcp
+        mode: host
+  storage:
+    image: previewer-storage-server
+    container_name: previewer-storage-server
+    hostname: storage
+    build:
+      context: ../.
+      args:
+        MICROSERVICE: storage_service
+      dockerfile: ./docker/Dockerfile
+    restart: always
+    networks:
+      backend:
+    ports: 
+      - target: 5000
+        published: "5000"
+        protocol: tcp
+        mode: host
+      
+networks:
+  backend:
+    name: previewer-internal-network
+    internal: true
+  frontend:
+    name: previewer-external-network
+
+# BUILDKIT_PROGRESS=plain docker-compose -f ./docker/docker-compose.yaml up -d --build --remove-orphans

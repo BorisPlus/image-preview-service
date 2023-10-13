@@ -1,0 +1,57 @@
+name: actions
+run-name: Push from ${{ github.actor }}
+on: [push]
+jobs:
+  linting:
+    if: ${{ !contains(github.event.head_commit.message, 'noact') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^1.20
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: $ make lint
+        run:  make lint
+      - name: $ golangci lint - ./core
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.54
+          working-directory: ./core
+      - name: $ golangci lint - ./cmd
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.54
+          working-directory: ./cmd
+      - name: $ golangci lint - ./docker.integration-test
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.54
+          working-directory: ./docker.integration-test
+      - name: $ make lint
+        run:  make test
+  testing:
+    if: ${{ !contains(github.event.head_commit.message, 'noact') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^1.20
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: $ make test
+        run:  make test
+  integration-test:
+    if: ${{ !contains(github.event.head_commit.message, 'noact') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^1.20
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: $ make integration-test
+        run:  make integration-test

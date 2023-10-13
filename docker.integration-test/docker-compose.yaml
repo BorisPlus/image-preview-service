@@ -1,0 +1,77 @@
+version: "3.9"
+networks:
+  default:
+    external:
+      name: int-test-previewer-network
+
+services:
+  storage:
+    image: int-test-previewer-storage_service
+    container_name: int-test-previewer-storage_service
+    hostname: storage_service
+    build:
+      context: ../.
+      args:
+        MICROSERVICE: storage_service
+      dockerfile: ./docker.integration-test/Dockerfile
+    restart: always
+    ports: 
+      - target: 5080
+        published: "5080"
+        protocol: tcp
+        mode: host
+    networks:
+      default:
+        ipv4_address: 10.10.0.80
+  http:
+    depends_on:
+      - storage
+    image: int-test-previewer-http_service
+    container_name: int-test-previewer-http_service
+    hostname: http_service
+    build:
+      context: ../.
+      args:
+        MICROSERVICE: http_service
+      dockerfile: ./docker.integration-test/Dockerfile
+    restart: always
+    ports: 
+      - "8081:8081"
+    networks:
+      default:
+        ipv4_address: 10.10.0.81
+  nginx:
+    image: int-test-previewer-nginx_service
+    container_name: int-test-previewer-nginx_service
+    hostname: nginx_service
+    build:
+      context: ../.
+      dockerfile: ./docker.integration-test/Dockerfile.nginx_service
+    restart: always
+    ports: 
+      - target: 80
+        published: "8082"
+        protocol: tcp
+        mode: host
+    networks:
+      default:
+        ipv4_address: 10.10.0.82
+  exthttp:
+    image: int-test-previewer-exthttp_service
+    container_name: int-test-previewer-exthttp_service
+    hostname: exthttp_service
+    build:
+      context: ../.
+      dockerfile: ./docker.integration-test/Dockerfile.exthttp_service
+    restart: always
+    ports: 
+      - target: 8083
+        published: "8083"
+        protocol: tcp
+        mode: host
+    volumes:
+      - ./logs:/var/log/previewer/
+    networks:
+      default:
+        ipv4_address: 10.10.0.83
+# BUILDKIT_PROGRESS=plain docker-compose -f ./docker.int-test-/docker-compose.yaml up -d --build --remove-orphans

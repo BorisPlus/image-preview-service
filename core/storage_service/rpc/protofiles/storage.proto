@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package previewer;
+
+option go_package = "./;storagerpcapi";
+
+message Transformation {
+  string    url    = 1;
+  int32     width  = 2;
+  int32     height = 3;
+}
+
+message Status {
+  bool      exists = 1;
+}
+
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.EnumValueOptions {
+  optional string string_name = 123456789;
+}
+
+enum code {
+  UNSPECIFIED      = 0;
+	RAW              = 1;
+	PROCESSING       = 2;
+	PROCESSING_ERROR = 3;
+	READY            = 4;
+	INTERNAL_ERROR   = 5;
+}
+
+message Result {
+  bytes       data = 1;
+  code       state = 2;
+} 
+
+message TransformationWithResult {
+  Transformation transformation = 1;
+  Result         result         = 2;
+}
+
+service Storage {
+  rpc Insert (Transformation)           returns (Status) {}
+  rpc Update (TransformationWithResult) returns (Status) {}
+  rpc Select (Transformation)           returns (Result) {}
+}

@@ -1,0 +1,17 @@
+{
+  "Http": {
+    "Host": "0.0.0.0",
+    "Port": 8080,
+    "ReadTimeout": 0,
+    "ReadHeaderTimeout": 0,
+    "WriteTimeout": 0,
+    "MaxHeaderBytes": 1048576
+  },
+  "Storage": {
+    "Host": "storage",
+    "Port": 5000
+  },
+  "Log": {
+    "Level": "ERROR"
+  }
+}

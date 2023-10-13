@@ -1,0 +1,10 @@
+ {
+  "Storage": {
+    "Host": "localhost",
+    "Port": 5000,
+    "Capacity": 5
+  },
+  "Log": {
+    "Level": "DEBUG"
+  }
+}
